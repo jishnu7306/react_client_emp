@@ -1,37 +1,39 @@
-import { Container, Form, Row, Col, Button } from 'react-bootstrap';
-import { useState } from 'react';
-
-export default function DemoUpload() {
-  const [image, setImage] = useState({ preview: "", data: "" });
-
-  const handleFile = (e) => {
-    const img = {
-      preview: URL.createObjectURL(e.target.files[0]),
-      data: e.target.files[0],
-    };
-    setImage(img);
-  };
-
-  return (
+import { Container, Row,Form,Button,Col, FormGroup, FormLabel, FormControl,Spinner } from 'react-bootstrap'; 
+import pic from "../images/client_bird.jpg"
+ 
+ 
+function Clog() { 
+  return ( 
     <>
-      <Container>
+<Container>
+    <div class="row justify-content-center mt-2">
         <Row>
-          <Col>
-            <Form>
-              <Form.Group>
-                <Form.Label>Upload photo</Form.Label>
-                <Form.Control type="file" name="file" required onChange={handleFile} />
-              </Form.Group>
-              <Form.Group>
-                <Button variant="primary">Submit</Button>
-              </Form.Group>
-            </Form>
-          </Col>
-          <Col>
-            {image.preview && <img src={image.preview} style={{ width: '250px', height: '250px' }} />}
-          </Col>
+            <Col lg={4}>
+            <img src={pic} style={{'width':'500px','height':'500px','borderRadius':'40% 40% 40% 40%'}}></img>
+
+            </Col>
+            <Col lg={4}>
+                <Form>
+                    <h3 className="text-center mb-5"><b>Client login</b></h3>
+                    <FormGroup>
+                        <FormLabel>e-mail</FormLabel>
+                        <FormControl type='email' name='em' placeholder='Enter mail id'></FormControl>
+                    </FormGroup>
+                    <FormGroup>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl type='password' name='pd' placeholder='Enter password'></FormControl>
+                    </FormGroup>
+                    <FormGroup align='right'>
+                     <Button type="submit" className='btn btn-outlinr-info-mt-3' size="lg" variant="success">Login </Button>
+                    </FormGroup>
+                </Form>
+            </Col>
+
         </Row>
-      </Container>
-    </>
-  );
-}
+    </div>
+</Container>
+</>
+  ); 
+} 
+ 
+export default Clog;
