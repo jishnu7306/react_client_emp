@@ -1,6 +1,7 @@
 import { Container, Form, Row, Col, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import AXIOS from 'axios';
+import CategoryForm from './category';
 
 export default function RegisterForm(){
     const [image, setImage] = useState({ preview: "", data: "" });
@@ -68,6 +69,7 @@ export default function RegisterForm(){
             </Form>
           </Col>
           <Col>
+          <CategoryForm/>
           </Col>
         </Row>
       </Container>

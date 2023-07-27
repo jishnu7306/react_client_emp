@@ -64,6 +64,19 @@ api.post('/uploadimg', upload.single('file'), (req, res) => {
   
   });
 
+//------------- Category -------------//
+
+api.post('/category', (req, res) => {
+  var category= req.body.category;
+  const obj = new catgModel({ category:category });
+  
+  obj.save().then(() => {
+      res.send({ "msg": "send successfully" });
+  }).catch((error) => {
+      res.status(500).send({ "error": "An error occurred while saving the object" });
+  });
+});
+
 
 //mongoose connection
 main().catch(err => console.log(err));
