@@ -17,7 +17,7 @@ api.use(express.urlencoded({extended:true}))
 const empStructure=new mongoose.Schema({fname:String,email:String,password:String})
 const prodStructure=new mongoose.Schema({pid:Number,productName:String,category:String,price:Number,stock:Number})
 const catgStructure=new mongoose.Schema({category:String})
-const demo=mongoose.Schema({fileurl:String});
+const demo=mongoose.Schema({fname:String,email:String,password:String,fileurl:String});
 //create model
 const empModel = new mongoose.model('employees',empStructure)
 const prodModel = new mongoose.model('products',prodStructure)
@@ -32,31 +32,37 @@ const storage = multer.diskStorage({
 //upload file
 const upload = multer({storage:storage})
 
-/*
+api.post('/add', (req, res) => {
+  var fname = req.body.fname;
+  var email = req.body.email;
+  var password = req.body.password;
+  const obj = new empModel({ fname: fname, email: email, password: password });
+  obj.save().then(() => {
+      res.send({ "msg": "send successfully" });
+  }).catch((error) => {
+      res.status(500).send({ "error": "An error occurred while saving the object" });
+  });
+});
+
 api.post('/uploadimg', upload.single('file'), (req, res) => {
     const url = req.file.filename;
     console.log(url);
     res.send({ 'msg': 'success' });
   });
-*/
 
-api.post('/uploadimg', upload.single('file'), (req, res) => {
-  try {
+  api.post('/uploadform', upload.single('file'), (req, res) => {
+    var fname = req.body.fname;
+    var email = req.body.email;
+    var password = req.body.password;
     const url = req.file.filename;
-    console.log(url);
-    // Save the file URL in the database
-    const demoEntry = new demoM({
-      fileurl: url,
+    const obj = new demoM({ fname: fname, email: email, password: password,fileurl: url });
+    obj.save().then(() => {
+      res.send({ "msg": "send successfully" });
+    }).catch((error) => {
+      res.status(500).send({ "error": "An error occurred while saving the object" });
     });
-   demoEntry.save();
-    // Respond with success message
-    res.send({ msg: 'success' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: 'Server error' });
-  }
-});
-
+  
+  });
 
 
 //mongoose connection

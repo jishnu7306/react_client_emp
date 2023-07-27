@@ -6,14 +6,18 @@ import reportWebVitals from './reportWebVitals';
 import DemoUpload from './components/demoupolad';
 import Clog from './components/client_log';
 import Creg from './components/client_reg';
+import Navbare from './components/navbar';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Caro from './components/caroluses';
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Navbare />
+    <Caro />
     <DemoUpload />
-    <Clog />
-    <Creg />
   </React.StrictMode>
 );
 
