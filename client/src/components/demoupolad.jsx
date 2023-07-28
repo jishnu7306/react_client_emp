@@ -1,78 +1,121 @@
-import { Container, Form, Row, Col, Button } from 'react-bootstrap';
-import { useState } from 'react';
+import { Container, Form, Row, Col,Button } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
 import AXIOS from 'axios';
 import CategoryForm from './category';
 
-export default function RegisterForm(){
-    const [image, setImage] = useState({ preview: "", data: "" });
-    const [fn,setfn]=useState("");
-    const [eml,seteml]=useState("");
-    const [pswd,setps]=useState("");
-    const formdata = new FormData();
+export default function demoform(){
+  const formdata = new FormData();
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [productName, setProductName] = useState('');
+  const [productDisc, setProductDisc] = useState('');
+  const [productPrice, setProductPrice] = useState('');
+  const [productStock, setProductStock] = useState('');
+  // Add other product form state variables here
 
-    const handleFile = (e) => {
-    const img = {
-      preview: URL.createObjectURL(e.target.files[0]),
-      data: e.target.files[0],
-    };
-    setImage(img);
+  useEffect(() => {
+    // Fetch categories from the backend when the component mounts
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = () => {
+    AXIOS.get('http://localhost:9000/catgetdata')
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const handleData = (event) => {
+    event.preventDefault();
+
+    // Append data to the FormData object
+    formdata.append("pname", productName);
+    formdata.append("disc", productDisc);
+    formdata.append("prodcategory", selectedCategory);
+    formdata.append("prodprice", productPrice);
+    formdata.append('stock', productStock);
+    console.log([...formdata]);
+
+    // Make the API call using FormData
+    AXIOS.post('http://localhost:9000/addproduct', formdata, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+      .then((res) => {
+        alert(res.data.msg);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
   };
 
-  const handleData = (e) => {
-    formdata.append("fname",fn);
-    formdata.append("email",eml);
-    formdata.append("password",pswd);
-    formdata.append('file', image.data);
-    AXIOS.post('http://localhost:9000/uploadform', formdata, { headers: { 'Content-Type': 'multipart/form-data' } })
-    .then((res) => {
-      alert(res.data.msg);
-    })
-    .catch((error) => {
-      console.error(error);
-    })
-  }
-   return(
-   <>
-      <Container className="bg-body-primary">
-        <h1>Registeration  Form</h1>
-        <Row>
-          <Col >
-            <Form  >
-            <Form.Group>
-                <Form.Label>Name</Form.Label>
-                <Form.Control type="text"
-                 name="fn"  
-                 onChange={(e)=>{
-                            setfn(e.target.value)}}/>
+  //const handleProductSubmit = (event) => {
+  //  event.preventDefault();};
+    return(
+        <>
+        <Container>
+            <Row>
+                <Col>
+                <h1>Product Form</h1>
+                    <Form onSubmit={handleData}  encType='multipart/form-data'>
+                        <Form.Group>
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control type="text"
+                                name="pname"
+                                value={productName}
+                                onChange={(e) => setProductName(e.target.value)}/>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Desription</Form.Label>
+                            <Form.Control type="text"
+                                          name="disc"
+                                          value={productDisc}
+                                            onChange={(e) => setProductDisc(e.target.value)}/>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Price</Form.Label>
+                            <Form.Control type="tele" 
+                                          name="prodprice"
+                                          value={productPrice}
+                                            onChange={(e) => setProductPrice(e.target.value)}/>
+                        </Form.Group>
+                        <Form.Group>
+                        <Form.Label>Category</Form.Label>
+                        <Form.Control
+                            as="select"
+                            value={selectedCategory}
+                            onChange={handleCategoryChange}>
+                            <option value="" className="prodcategory">Select a category</option>
+                            {categories.map((category) => (
+                            <option key={category._id} value={category.category}>
+                              {category.category} 
+                            </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
-              <Form.Group>
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" name="email"     onChange={(e)=>{
-                            seteml(e.target.value)
-
-                    }}/>
+                        <Form.Group>
+                            <Form.Label>Stock</Form.Label>
+                            <Form.Control ype="text"
+                                name="stock"
+                                value={productStock}
+                                onChange={(e) => setProductStock(e.target.value)}/>
+                        </Form.Group>
+                    </Form>
+                    <Form.Group>
+                <Button className="mt-3"type="submit" variant="primary">
+                  Submit
+                </Button>
               </Form.Group>
-              <Form.Group>
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" name="pswd"   onChange={(e)=>{
-                            setps(e.target.value)
-
-                    }} />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Upload photo</Form.Label>
-                <Form.Control type="file" name="file"  required onChange={handleFile}/>
-              </Form.Group>
-              <Form.Group>
-                <Button variant="primary" onClick={()=>{handleData()}} >Submit</Button>
-              </Form.Group>
-            </Form>
-          </Col>
-          <Col>
-          <CategoryForm/>
-          </Col>
-        </Row>
-      </Container>
-    </>
-   )
+                </Col>
+                <Col>
+                <CategoryForm/>
+                </Col>
+            </Row>
+        </Container>
+        </>
+    )
 }

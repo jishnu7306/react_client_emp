@@ -9,6 +9,7 @@ import Creg from './components/client_reg';
 import Navbare from './components/navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Caro from './components/caroluses';
+import ProductsForm from './components/productform';
 
 
 
@@ -17,7 +18,7 @@ root.render(
   <React.StrictMode>
     <Navbare />
     <Caro />
-    <DemoUpload />
+    <ProductsForm />
   </React.StrictMode>
 );
 
